@@ -1,0 +1,625 @@
+/* ════════════════════════════════════════════════
+   ONE SHOT — Main Stylesheet
+   Scenes: lighterScene → fireworksSection
+   Aesthetic: cinematic, dark, warm amber
+   Font: Russo One (loaded via HTML)
+   ════════════════════════════════════════════════ */
+
+/* ── Reset / base ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: 'Russo One', sans-serif;
+}
+
+/* ════════════════════════════════════════════════
+   SKY BACKGROUND — persistent across both scenes
+   ════════════════════════════════════════════════ */
+#sky-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(ellipse at 50% 0%, #1a0a00 0%, #0a0300 55%, #000 100%);
+  transition: background 1.2s ease;
+}
+
+/* Subtle star field painted via JS on a pseudo */
+#sky-stars {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  /* stars are drawn on a canvas injected by director.js */
+}
+
+/* ════════════════════════════════════════════════
+   MOON — drifts across entire experience
+   ════════════════════════════════════════════════ */
+#moonBackground {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 20;
+  display: none;
+  background: transparent url(https://enes.in/assets/tumblr_oxivv3ja7l1vq64mxo1_1280.jpg) no-repeat;
+  background-size: 20%;
+  background-position: -25% calc(25% + 10px);
+  pointer-events: none;
+  /* screen blend: JPG black background becomes invisible,
+     and bright fireworks punch through the moon's dark areas */
+  mix-blend-mode: screen;
+}
+#moonBackground.animating {
+  animation: moonDrift 70s linear forwards;
+}
+@keyframes moonDrift {
+  from { background-position: -25% calc(25% + 10px); }
+  to   { background-position: 140% calc(25% + 10px); }
+}
+
+/* ════════════════════════════════════════════════
+   LIGHTER SCENE
+   ════════════════════════════════════════════════ */
+#lighterScene {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  /* opacity controlled by director.js for seamless fade */
+  opacity: 1;
+  transition: opacity 0.9s ease;
+}
+#lighterScene.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* body warm glow when lighter is lit */
+body.lit #sky-bg {
+  background: radial-gradient(ellipse at 50% 80%, #3a1500 0%, #180800 45%, #080300 100%);
+}
+
+/* ── Centering wrapper ── */
+.wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 60px;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  z-index: 20;
+}
+
+/* ── Lighter position ── */
+.wrapper .clipper {
+  position: relative;
+  cursor: pointer;
+  top: 90px;
+  /* camera-pan: lighter slides down & fades as scene transitions */
+  transition: transform 1.2s cubic-bezier(0.4,0,0.2,1), opacity 0.8s ease;
+}
+.wrapper .clipper.pan-away {
+  transform: translateY(120px);
+  opacity: 0;
+}
+
+/* ── Metal cap ── */
+.wrapper .clipper .metal {
+  width: 55px;
+  height: 62px;
+  border-radius: 8px 8px 95% 95% / 10px 10px 11% 11%;
+  margin-bottom: -4px;
+  z-index: 10;
+  position: relative;
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.4) inset,
+              0 3px 2px #bcbaad inset,
+              0 1px 1px rgba(0,0,0,0.3);
+  background: linear-gradient(90deg,
+    #d5d3c8 0%, #e2e2e2 2%, #bdbbb0 7%, #ffffff 12%,
+    #5d584e 15%, #d6d6d6 19%, #c9c8c8 23%, #ffffff 56%,
+    #0f0904 57%, #383634 79%, #c9c7bb 81%, #ffffff 100%);
+}
+.wrapper .clipper .metal .dent {
+  width: 8px; height: 8px;
+  border-radius: 10px;
+  background: #111;
+  position: absolute;
+  right: 20px; bottom: 13px;
+  box-shadow: -1px -1px 1px 1px #fff inset,
+               1px  1px 1px 1px #555 inset,
+               0 -1px 1px 2px #111;
+}
+
+/* ── Flame ── */
+.wrapper .clipper .flame-wrap {
+  transform: scaleY(0);
+  transition: all 90ms ease-out;
+}
+.wrapper .clipper .flame {
+  width: 20px;
+  height: 65px;
+  position: absolute;
+  top: -63px;
+  left: 10px;
+  border-radius: 47% 53% 38% 38% / 95% 95% 10% 10%;
+  box-shadow: -7px 8px 4px -5px #396e9a,
+               7px 8px 4px -5px #396e9a,
+              -1px -4px 8px #396e9a inset,
+               0 -6px 6px #caa821,
+               0 -30px 50px -10px #caa821;
+  background: linear-gradient(0deg,
+    rgba(21,27,41,0) 0%, rgba(35,35,41,0) 7%,
+    #ed9d22 46%, #fefefc 71%, #fefefc 100%);
+  animation: slide-right 2s both ease-out infinite;
+  transform-origin: bottom;
+  transition: transform 0.12s ease-out, filter 0.12s ease-out;
+  will-change: transform;
+}
+@keyframes slide-right {
+  0%   { transform: scaleY(1) skewX(-4deg); }
+  50%  {
+    transform: scaleY(1.1) skewX(0deg);
+    box-shadow: -7px 8px 4px -5px #396e9a, 7px 8px 4px -5px #396e9a,
+                -1px -4px 8px #396e9a inset, 0 -6px 6px #caa821,
+                0 -30px 50px -5px #caa821;
+  }
+  100% { transform: scaleY(1) skewX(-4deg); }
+}
+
+/* ── Lighter body ── */
+.wrapper .clipper .body {
+  position: relative;
+  width: 55px;
+  height: 220px;
+  border-radius: 0% 0% 95% 95% / 0% 0% 11% 11%;
+  box-shadow: 0 4px #000, -1px 0 4px rgba(0,0,0,0.1) inset;
+  background: linear-gradient(90deg,
+    #a73e3e 0%, #d54f4f 4%, #f99898 8%, #ffa4a4 11%,
+    #d54f4f 15%, #d54f4f 19%, #da5858 21%, #da5858 35%,
+    #da5858 49%, #d54f4f 56%, #d65050 78%, #da5757 80%,
+    #9a3d3d 100%);
+}
+.wrapper .clipper .right-part {
+  width: 32px; height: 215px;
+  position: absolute;
+  top: 48px; right: -15px;
+  transform: skewX(-8deg);
+  z-index: 0;
+  background: linear-gradient(260deg, #e05151 0%, #672525 100%);
+  box-shadow: -2px 0 1px rgba(255,255,255,0.3) inset,
+               0 1px 2px rgba(0,0,0,0.5) inset;
+}
+.wrapper .clipper .trigger {
+  position: absolute;
+  top: 25px; right: -29px;
+  transition: all 150ms ease-out;
+}
+.wrapper .clipper .trigger .top {
+  background: #222;
+  width: 29px; height: 8px;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 1px 8px #000 inset, 0 -1px 2px rgba(255,255,255,0.3) inset;
+}
+.wrapper .clipper .trigger .bottom {
+  background: #000;
+  width: 26px; height: 16px;
+  box-shadow: 0 -12px 12px rgba(255,255,255,0.1) inset;
+}
+.wrapper .clipper .stone {
+  position: absolute;
+  width: 18px; height: 18px;
+  background: #111;
+  border-radius: 30px;
+  top: -7px; left: 42px;
+  z-index: 1;
+  box-shadow: 0 0 8px #fff, 0 0 0 4px #666,
+              0 0 3px 6px #444, 0 0 0 7px #bdbbb0;
+  transition: all 150ms ease-out;
+  border: 1px dashed #333;
+}
+.wrapper .clipper .stone:before {
+  content: '';
+  display: block;
+  width: 32px; height: 32px;
+  border-radius: 30px;
+  border: 1px dashed #333;
+  top: -7px; left: -7px;
+  position: relative;
+}
+.wrapper .clipper .stone-holder {
+  position: absolute;
+  left: 55px; top: 5px;
+  width: 0; height: 0;
+  border-width: 18px 7px 0 0;
+  border-color: #111 transparent transparent transparent;
+  border-style: solid;
+  z-index: 2;
+}
+
+/* Glow under lighter */
+.wrapper .clipper::after {
+  content: '';
+  position: absolute;
+  bottom: -18px; left: 50%;
+  transform: translateX(-50%);
+  width: 60px; height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,150,20,0.55) 0%, transparent 80%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.wrapper .clipper.is-lit::after { opacity: 1; }
+
+/* Active / pressed */
+.wrapper .clipper:active .flame-wrap,
+.wrapper .clipper:focus  .flame-wrap { transform: scaleY(1); transition: all 150ms ease-out; }
+.wrapper .clipper:active .trigger,
+.wrapper .clipper:focus  .trigger    { top: 30px; z-index: 0; }
+.wrapper .clipper:active .stone,
+.wrapper .clipper:focus  .stone      { transform: rotate(100deg); }
+
+/* ── Fuse canvas ── */
+#fuse-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* ── Explosion ── */
+#explosion {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  display: none;
+}
+.exp-ring {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: exp-expand 0.65s ease-out forwards;
+}
+@keyframes exp-expand {
+  0%   { width: 0;     height: 0;     opacity: 1; }
+  100% { width: 220px; height: 220px; opacity: 0; }
+}
+.exp-flash {
+  position: fixed;
+  inset: 0;
+  background: #fff9e6;
+  pointer-events: none;
+  z-index: 10000;
+  animation: flash 0.1s ease-out forwards;
+}
+@keyframes flash { 0% { opacity: 0.9; } 100% { opacity: 0; } }
+
+/* ── Hint ── */
+#hint {
+  position: fixed;
+  bottom: 44px; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Russo One', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.28);
+  pointer-events: none;
+  letter-spacing: 0.08em;
+  transition: opacity 0.6s ease;
+  white-space: nowrap;
+  z-index: 50;
+}
+
+/* ════════════════════════════════════════════════
+   FIREWORKS SCENE
+   ════════════════════════════════════════════════ */
+#fireworksSection {
+  position: fixed;
+  inset: 0;
+  z-index: 5; /* behind lighter scene */
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
+}
+#fireworksSection.active {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 15;
+}
+
+#fireworksSection * { position: relative; box-sizing: border-box; }
+
+#fireworksSection .container {
+  width: 100%; height: 100%;
+  display: block;
+  background: transparent;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 5;
+}
+
+.loading-init {
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Russo One', sans-serif;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.06em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+.loading-init__header { font-size: 2.2em; }
+.loading-init__status { margin-top: 1em; font-size: 0.8em; opacity: 0.75; }
+
+.stage-container {
+  overflow: hidden;
+  width: 100%; height: 100%;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10;
+  background: transparent;
+}
+.canvas-container {
+  width: 100%; height: 100%;
+  transition: filter 0.3s;
+  background: transparent !important;
+}
+.canvas-container canvas {
+  position: absolute;
+  mix-blend-mode: lighten;
+  transform: translateZ(0);
+  background: transparent !important;
+}
+
+/* Controls / menu (same as original) */
+.controls {
+  position: absolute; top: 0; width: 100%;
+  padding-bottom: 50px;
+  display: flex; justify-content: flex-end;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+.menu {
+  position: absolute; top: 0; bottom: 0; left: 0; right: 0;
+  background-color: rgba(0,0,0,0.42);
+  transition: opacity 0.3s, visibility 0.3s;
+}
+.menu__inner-wrap {
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  position: absolute; top: 0; bottom: 0; left: 0; right: 0;
+  transition: opacity 0.3s;
+  font-family: 'Russo One', sans-serif;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.06em;
+}
+.menu__header { margin-top: auto; margin-bottom: 8px; padding-top: 16px; font-size: 2em; text-transform: uppercase; }
+.menu__subheader { margin-bottom: auto; padding-bottom: 12px; font-size: 0.86em; opacity: 0.8; }
+.menu form { width: 100%; max-width: 400px; padding: 0 10px; overflow: auto; }
+.menu .form-option { display: flex; align-items: center; margin: 16px 0; transition: opacity 0.3s; }
+.menu .form-option label { display: block; width: 50%; padding-right: 12px; text-align: right; text-transform: uppercase; user-select: none; }
+.menu .form-option--select select {
+  display: block; width: 50%; height: 30px; font-size: 1rem;
+  font-family: 'Russo One', sans-serif; color: rgba(255,255,255,0.5);
+  letter-spacing: 0.06em; background-color: transparent;
+  border: 1px solid rgba(255,255,255,0.5);
+}
+.menu .form-option--select select option { background-color: black; }
+.menu .form-option--checkbox input { display: block; width: 26px; height: 26px; margin: 0; opacity: 0.5; }
+.close-menu-btn { position: absolute; top: 0; right: 0; }
+
+.btn {
+  opacity: 0.16; width: 50px; height: 50px;
+  display: flex; user-select: none; cursor: default;
+  transition: opacity 0.3s;
+}
+.btn--bright { opacity: 0.5; }
+@media (min-width: 840px) {
+  .btn:hover        { opacity: 0.32; }
+  .btn--bright:hover { opacity: 0.75; }
+}
+.btn svg { display: block; margin: auto; }
+
+.credits { margin-top: auto; margin-bottom: 10px; padding-top: 6px; font-size: 0.8em; opacity: 0.75; }
+.credits a { color: rgba(255,255,255,0.5); text-decoration: none; }
+.credits a:hover { color: rgba(255,255,255,0.75); text-decoration: underline; }
+
+/* Help modal */
+.help-modal {
+  display: flex; justify-content: center; align-items: center;
+  position: fixed; top: 0; bottom: 0; left: 0; right: 0;
+  visibility: hidden;
+  transition-property: visibility; transition-duration: 0.25s;
+  font-family: 'Russo One', sans-serif; color: rgba(255,255,255,0.5);
+}
+.help-modal__overlay {
+  position: absolute; top: 0; bottom: 0; left: 0; right: 0;
+  opacity: 0; transition: opacity 0.25s ease-in;
+}
+.help-modal__dialog {
+  display: flex; flex-direction: column; align-items: center;
+  max-width: 400px; max-height: calc(100vh - 100px);
+  margin: 10px; padding: 20px; border-radius: 0.3em;
+  background-color: rgba(0,0,0,0.4);
+  opacity: 0; transform: scale(0.9);
+  transition: opacity 0.25s ease-in, transform 0.25s ease-in;
+}
+.help-modal__header { font-size: 1.75em; text-transform: uppercase; text-align: center; }
+.help-modal__body {
+  overflow-y: auto; margin: 1em 0; padding: 1em 0;
+  border-top: 1px solid rgba(255,255,255,0.25);
+  border-bottom: 1px solid rgba(255,255,255,0.25);
+  line-height: 1.5; color: rgba(255,255,255,0.75);
+}
+.help-modal__close-btn {
+  flex-shrink: 0; outline: none; border: none; border-radius: 2px;
+  padding: 0.25em 0.75em; margin-top: 0.36em;
+  font-family: 'Russo One', sans-serif; font-size: 1em;
+  color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.06em;
+  background-color: rgba(255,255,255,0.25);
+  transition: color 0.3s, background-color 0.3s; cursor: pointer;
+}
+.help-modal__close-btn:hover { color: #fff; background-color: #09f; }
+.help-modal.active { visibility: visible; transition-duration: 0.4s; }
+.help-modal.active .help-modal__overlay { opacity: 1; transition: opacity 0.4s ease-out; }
+.help-modal.active .help-modal__dialog  { opacity: 1; transform: scale(1); transition: opacity 0.4s ease-out, transform 0.4s ease-out; }
+
+/* Utility */
+.hide   { opacity: 0; visibility: hidden; }
+.remove { display: none !important; }
+.blur   { filter: blur(12px); }
+
+/* ════════════════════════════════════════════════
+   RESPONSIVE ADDITIONS — minimal additive rules
+   Goal: fix overflow & alignment, scale on small
+   screens, improve touch usability. Original
+   structure, classes and layout are unchanged.
+   ════════════════════════════════════════════════ */
+
+html, body {
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+
+/* iOS dynamic viewport height — keeps loading screen flush
+   under Safari's collapsing URL bar. */
+@supports (height: 100dvh) {
+  .loading-init { min-height: 100dvh; }
+}
+
+/* iPhone safe-area insets (notch / Dynamic Island / home bar) */
+@supports (padding: max(0px)) {
+  #hint            { bottom: calc(44px + env(safe-area-inset-bottom)); }
+  .controls        { padding-top: env(safe-area-inset-top);
+                     padding-right: env(safe-area-inset-right); }
+  .menu__inner-wrap{ padding-top: env(safe-area-inset-top);
+                     padding-bottom: env(safe-area-inset-bottom); }
+}
+
+/* ── Tablet & smaller (≤ 768px) ── */
+@media (max-width: 768px) {
+  .wrapper .clipper { top: 60px; }
+  .menu form        { max-width: 100%; padding: 0 16px; }
+  #moonBackground   { background-size: 35%; }
+}
+
+/* ── Mobile portrait (≤ 480px) — most iPhones ── */
+@media (max-width: 480px) {
+  /* Scale the lighter so it never crowds the viewport.
+     pan-away override preserves the scale during the
+     scene-transition translation. */
+  .wrapper .clipper {
+    top: 40px;
+    transform: scale(0.85);
+    transform-origin: center center;
+  }
+  .wrapper .clipper.pan-away {
+    transform: translateY(120px) scale(0.85);
+  }
+
+  /* Hint text wraps instead of overflowing horizontally */
+  #hint {
+    font-size: 11px;
+    padding: 0 16px;
+    white-space: normal;
+    text-align: center;
+    max-width: 90vw;
+    line-height: 1.4;
+  }
+
+  /* Touch-friendly tap targets */
+  .btn          { width: 48px; height: 48px; }
+  .controls .btn{ margin: 12px !important; }
+
+  /* Loading + menu typography */
+  .loading-init__header { font-size: 1.6em; }
+  .menu__header         { font-size: 1.6em; }
+  .menu__subheader      { font-size: 0.78em; padding-bottom: 8px; }
+
+  /* Settings form — keep flex layout but breathe a bit */
+  .menu form                       { padding: 0 14px; }
+  .menu .form-option               { margin: 12px 0; }
+  .menu .form-option label         { width: 55%; font-size: 0.9em; padding-right: 10px; }
+  .menu .form-option--select select{ width: 45%; height: 36px; font-size: 0.95rem; }
+  .menu .form-option--checkbox input { width: 28px; height: 28px; }
+
+  /* Help modal fits tighter */
+  .help-modal__dialog { max-width: calc(100vw - 24px); margin: 12px; padding: 16px; }
+  .help-modal__header { font-size: 1.4em; }
+}
+
+/* ── Very small devices (≤ 374px) — iPhone SE / mini ── */
+@media (max-width: 374px) {
+  .wrapper .clipper {
+    top: 24px;
+    transform: scale(0.75);
+  }
+  .wrapper .clipper.pan-away {
+    transform: translateY(120px) scale(0.75);
+  }
+  #hint                 { font-size: 10px; bottom: 32px; }
+  .menu__header         { font-size: 1.35em; }
+  .loading-init__header { font-size: 1.4em; }
+}
+
+/* ── Landscape on short screens (mobile landscape) ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .wrapper { padding-bottom: 20px; }
+  .wrapper .clipper {
+    top: 0;
+    transform: scale(0.6);
+    transform-origin: center center;
+  }
+  .wrapper .clipper.pan-away {
+    transform: translateY(120px) scale(0.6);
+  }
+  #hint                 { bottom: 12px; font-size: 10px; }
+  .menu form            { max-height: 70vh; overflow-y: auto; padding: 0 12px; }
+  .menu .form-option    { margin: 8px 0; }
+  .menu__header         { font-size: 1.2em; padding-top: 8px; margin-bottom: 4px; }
+  .menu__subheader      { padding-bottom: 6px; font-size: 0.75em; }
+  .loading-init__header { font-size: 1.3em; }
+}
+
+/* ════════════════════════════════════════════════
+   BIRTHDAY MESSAGE — appears after moon exits
+   ════════════════════════════════════════════════ */
+#birthday-message {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: none;
+  font-family: 'Russo One', sans-serif;
+  font-size: clamp(2rem, 8vw, 6rem);
+  color: #fff;
+  text-align: center;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  text-shadow: 0 0 40px #ffcc33, 0 0 80px #ff9900, 0 0 120px #ff6600;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 1.6s ease, transform 1.6s ease;
+}
+#birthday-message.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Touch-only refinements (no hover) */
+@media (hover: none) {
+  .btn,
+  .menu .form-option--checkbox input,
+  .menu .form-option--select select {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .menu .form-option--select select { min-height: 36px; }
+}

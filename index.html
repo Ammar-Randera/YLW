@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+  <title>Birthday Surprise</title>
+  <link rel="stylesheet" href="./birthday-style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://public.codepenassets.com/css/reset-2.0.min.css">
+</head>
+<body>
+
+<!-- GIFTBOX SECTION -->
+<div id="giftSection">
+  <div class="present" id="presentBox">
+    <div class="ribbon">
+      <div class="ribbon-line-left"></div>
+      <div class="ribbon-line-right"></div>
+      <div class="ribbon-part-left"></div>
+      <div class="ribbon-part-right"></div>
+      <div class="ribbon-cut-out"></div>
+    </div>
+
+    <div class="star" id="giftStar"></div>
+
+    <div class="box-lid">
+      <div class="box-top-lid"></div>
+      <div class="box-left-lid"></div>
+      <div class="box-front-lid"></div>
+      <div class="box-right-lid"></div>
+      <div class="box-back-lid"></div>
+    </div>
+
+    <div class="box">
+      <div class="box-left"></div>
+      <div class="box-front"></div>
+    </div>
+    <div class="back-box-cover">
+      <div class="box-right"></div>
+      <div class="box-back"></div>
+    </div>
+  </div>
+
+  <p id="tapHint">Tap the box to open it ✨</p>
+</div>
+
+<!-- BIRTHDAY SECTION -->
+<div id="birthdaySection" style="display:none;">
+
+  <div id="sky"></div>
+
+  <div id="intro" class="hidden">
+    <div id="star"></div>
+  </div>
+
+  <div id="loaderContainer" class="hidden">
+    <div class="loader"></div>
+  </div>
+
+  <div id="birthdayMessage">
+    <div id="bdayHandwriting"></div>
+  </div>
+
+  <!-- CAKE -->
+  <div id="cake" class="birthday-cake">
+    <div class="cake-plate"></div>
+    <div class="cake-layer cake-layer-bottom"></div>
+    <div class="cake-layer cake-layer-middle"></div>
+    <div class="cake-layer cake-layer-top"></div>
+    <div class="cake-drip cake-drip-1"></div>
+    <div class="cake-drip cake-drip-2"></div>
+    <div class="cake-drip cake-drip-3"></div>
+    <div class="cake-drip cake-drip-4"></div>
+    <div class="cake-drip cake-drip-5"></div>
+    <div class="cake-drip cake-drip-6"></div>
+    <div class="cake-drip cake-drip-7"></div>
+    <div class="cake-drip cake-drip-8"></div>
+    <div class="cake-drip cake-drip-9"></div>
+    <div class="cake-icing"></div>
+    <div class="cake-candle">
+      <div class="cake-flame"></div>
+    </div>
+  </div>
+
+  <button id="blowBtn" class="blow-button">Blow the Candle 💨</button>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vara@1.4.1/src/vara.min.js"></script>
+<script src="./giftbox.js"></script>
+<script src="./birthday.js"></script>
+</body>
+</html>
