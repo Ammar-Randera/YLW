@@ -46,7 +46,7 @@ html, body {
   display: none;
   background: transparent url(https://enes.in/assets/tumblr_oxivv3ja7l1vq64mxo1_1280.jpg) no-repeat;
   background-size: 20%;
-  background-position: -25% calc(25% + 10px);
+  background-position: -45% calc(25% + 10px);
   pointer-events: none;
   /* screen blend: JPG black background becomes invisible,
      and bright fireworks punch through the moon's dark areas */
