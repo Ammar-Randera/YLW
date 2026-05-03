@@ -24,7 +24,7 @@ const STATE = { ON: fromBirthday ? false : true };
 
 document.documentElement.style.setProperty("--on", STATE.ON ? "1" : "0");
 
-const TOGGLE_READY_AT = Date.now() + 2000;
+const TOGGLE_READY_AT = Date.now() + 1000;
 
 const CORD_DURATION = 0.1;
 const PULL_THRESHOLD = 15;
@@ -107,7 +107,7 @@ Draggable.create(PROXY, {
 setTimeout(() => {
   const hint = document.querySelector(".cord-hint");
   if (hint) hint.classList.add("visible");
-}, 7000);
+}, 1000);
 
 /* ─────────────────────────────────────────
    Envelope & Letter
