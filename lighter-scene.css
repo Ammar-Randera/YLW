@@ -56,7 +56,7 @@ html, body {
   animation: moonDrift 70s linear forwards;
 }
 @keyframes moonDrift {
-  from { background-position: -25% calc(25% + 10px); }
+  from { background-position: -45% calc(25% + 10px); }
   to   { background-position: 140% calc(25% + 10px); }
 }
 
